@@ -1,0 +1,8 @@
+fastapi
+pydub
+azure-cognitiveservices-speech
+uvicorn
+python-multipart
+ffmpeg-python
+websockets
+azure-messaging-webpubsubservice
