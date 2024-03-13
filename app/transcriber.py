@@ -89,8 +89,6 @@ class Transcriber:
             print(f"Encountered exception: {err}\n")
 
     def stop_recording(self, userId: str):
-        # Acquire lock to ensure thread-safe operation
-        self.transcription_lock.acquire()   
         # Check if the user has an active session and stop it
         if userId in self.active_sessions:
             self.transcribing_stop = True        
@@ -98,7 +96,8 @@ class Transcriber:
             if self.transcription_thread is not None:
                 self.transcription_thread.join()        
             # Clean up the session
-            self.transcription_text = ""
+            with self.transcription_lock:
+                self.transcription_text = "" 
             self.transcription_thread = None
             if self.temp_file_path and os.path.exists(self.temp_file_path):
                 os.remove(self.temp_file_path)
@@ -111,7 +110,6 @@ class Transcriber:
                 loop.create_task(broadcast_final_message(userId))
             else:
                 loop.run_until_complete(broadcast_final_message(userId))       
-        self.transcription_lock.release()
         print(f"Recording stopped for user: {userId}")
                   
     def save_transcription(self):
@@ -192,4 +190,5 @@ class Transcriber:
         wav_file_path = file_path.rsplit(".", 1)[0] + ".wav"
         sound.export(wav_file_path, format="wav")
         return wav_file_path
+    
 
