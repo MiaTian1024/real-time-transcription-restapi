@@ -1,5 +1,15 @@
-# Use an official Python runtime as a parent image
-FROM --platform=linux/amd64 python:3.9-slim
+# Specifies the base image for the container. 
+FROM --platform=linux/amd64 ubuntu:22.04
+
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+# Updates the package lists for Ubuntu 
+RUN apt-get -y update
+RUN apt-get -y upgrade
+RUN apt-get install -y \
+    python3.10 \
+    python3.10-dev \
     python3-pip \
     curl
 
