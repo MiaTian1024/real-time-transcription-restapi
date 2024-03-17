@@ -6,6 +6,10 @@ import asyncio
 from pydub import AudioSegment  # For audio file conversion
 from azure.messaging.webpubsubservice import WebPubSubServiceClient
 
+# Set up the subscription info for the Speech Service
+speech_key = os.environ.get('SPEECH_KEY')
+service_region = os.environ.get('SPEECH_REGION')
+
 # Initialize the Web PubSub service client with connection string
 webpubsub_connection_string = os.environ.get('CONNECTION_STRING')
 webpubsub_hub_name = os.environ.get('HUB_NAME')
@@ -126,7 +130,7 @@ class Transcriber:
     def recognize_from_file(self, file_path: str, userId: str):
         self.transcribing_stop = False
         # Setting up the Azure Speech Service configuration
-        speech_config = speechsdk.SpeechConfig(subscription=os.environ.get('SPEECH_KEY'), region=os.environ.get('SPEECH_REGION'))
+        speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
         speech_config.speech_recognition_language = "en-US"
         # Configuring the audio source 
         audio_config = speechsdk.audio.AudioConfig(filename=file_path)
@@ -157,7 +161,7 @@ class Transcriber:
     def recognize_from_microphone(self, userId: str):
         self.transcribing_stop = False
         # Setting up the Azure Speech Service configuration
-        speech_config = speechsdk.SpeechConfig(subscription=os.environ.get('SPEECH_KEY'), region=os.environ.get('SPEECH_REGION'))
+        speech_config = speechsdk.SpeechConfig(subscription=speech_key, region=service_region)
         speech_config.speech_recognition_language="en-US"
         # Configuring the audio source 
         audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
